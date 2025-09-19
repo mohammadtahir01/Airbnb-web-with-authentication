@@ -1,0 +1,71 @@
+/* body{
+    background-color: aqua;
+} */
+.container-fluid{
+ height: 5rem;
+ background-color: white;
+}
+.fa-compass{
+    color: #fe424d;
+    font-size: 2rem;
+}
+.nav-link{
+    color: #222222 !important;
+}
+.main-container{
+    background-color: #ebebeb;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+}
+.info-socal{
+    width: 100%;
+}
+
+.info-socal i{
+    font-size: 1.2rem;
+}
+
+.info-link a{
+    text-decoration: none;
+    color: #222222;
+}
+
+.info-link a:hover{
+    text-decoration: underline;
+}
+
+.info-link{
+    width: 100%;
+}
+
+/* card  */
+.listing-card{
+    border: none !important;
+    margin-bottom: 1rem;
+}
+.card img{
+    border-radius: 10px;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+
+.main{
+    text-decoration: none;
+}
+
+.card-img-overlay{
+    opacity: 0;
+}
+.card-img-overlay:hover{
+    opacity: 0.2;
+    background-color: white;
+}
+
+/* btns */
+.btns{
+    display: flex;
+}

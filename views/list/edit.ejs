@@ -1,0 +1,41 @@
+<% layout("/layout/boilerPlate") %>
+ <div class="row pt-3 pb-3" >
+    <div class="col-8 offset-2">
+    <h3>Edit data</h3>
+    <form method="post" action="/listings/<%= listingEdit._id %>?_method=PUT">
+        <!-- <p><%=listingEdit._id %></p> -->
+        <div class="mb-1">
+        <label for="title" class="form-label"><Title></Title></label>
+        <input type="text" name="listing[title]" required value="<%=listingEdit.title %>" class="form-control">
+        </div>
+       
+       <div class="mb-1">
+        <label for="description" class="form-label">Description</label>
+        <textarea name="listing[description]" required class="form-control"><%=listingEdit.description %></textarea>
+       </div>
+        
+      <div class="mb-1">
+        <label for="image" class="form-label">Image Link</label>
+        <input type="text" name="listing[image]" value="<%=listingEdit.image %>" class="form-control">
+      </div>
+      
+  <div class="row">
+           <div class="mb-1 col-md-4">
+          <label for="price" class="form-label">Enter Price</label>
+          <input type="number" name="listing[price]" required value="<%=listingEdit.price %>" class="form-control">
+           </div>
+       
+       <div class="mb-1 col-md-8">
+          <label for="location" class="form-label">Enter Location</label>
+          <input type="text" name="listing[location]" required value="<%=listingEdit.location %>" class="form-control">
+       </div>
+       </div>
+      
+       <div class="mb-1">
+          <label for="country" class="form-label">Country</label>
+        <input type="text" name="listing[country]" required value="<%= listingEdit.country %>" class="form-control">
+       </div>
+        <button class="btn btn-dark">submit</button>
+    </form>
+      </div>
+  </div>

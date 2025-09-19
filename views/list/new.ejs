@@ -1,0 +1,51 @@
+<% layout("/layout/boilerPlate") %>
+
+<!-- <body> -->
+    <div class="row pt-3 pb-3" >
+    <div class="col-8 offset-2">
+    <h3>Create New Post</h3>
+    <form method="POST" action="/listings"  novalidate class="needs-validation">
+    <div class="mb-1">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" name="listing[title]" class="form-control" placeholder="enter title" required>
+      <div class="valid-feedback">
+      Looks good!
+    </div>
+    </div>
+
+    <div class="mb-1">
+      <label for="description" class="form-label">Description</label>
+      <textarea name="listing[description]" class="form-control" placeholder="description" required></textarea>
+    </div>
+
+    <div class="mb-1">
+      <label for="image" class="form-label">Image Link</label>
+      <input type="text" name="listing[image]" class="form-control" placeholder="image link">
+    </div>
+
+  <div class="row">
+      <div class="mb-1 col-md-4">
+      <label for="price" class="form-label">Enter Price</label>
+      <input name="listing[price]" class="form-control" placeholder="12000" required>
+      <div class="invalid-feedback">
+      Please Enter Valid Price
+    </div>
+    </div>
+
+    <div class="mb-1 col-md-8">
+      <label for="location" class="form-label">Location</label>
+      <input type="text" name="listing[location]" class="form-control" placeholder="enter location" required>
+    </div>
+  </div>
+
+    <div class="mb-1">
+      <label for="country" class="form-label">Country</label>
+      <input type="text" name="listing[country]" class="form-control" placeholder="enter country" required>
+    </div>
+
+    <button class="btn btn-dark">Submit</button>
+  </form>
+  </div>
+  </div>
+<!-- </body>
+</html> -->
