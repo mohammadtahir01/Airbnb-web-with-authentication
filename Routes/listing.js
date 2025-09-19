@@ -48,6 +48,7 @@ route.post("/",
     let newListing = new Listing(req.body.listing);
     await newListing.save();
     console.log(newListing)
+    req.flash('sucess', 'Login successfull!')
     res.redirect("/listings")  
 }));
 
@@ -83,7 +84,8 @@ route.delete("/:id",
     if(!data){
        throw new ExpressError(404, "Cannot delete, listing not found!");
     }
-    console.log("deleted  data",data)
+    // console.log("deleted  data",data)
+    req.flash('sucess', 'Listing Deleted!')
     res.redirect("/listings");  
     // res.send(id)
 }))

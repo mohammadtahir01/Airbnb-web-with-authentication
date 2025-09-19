@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const overRide = require("method-override")
 const route = require("./Routes/listing.js");
 const review1 = require("./Routes/review.js");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 
 // const {listingSchema,reviewShema} = require("./schema.js")
@@ -31,50 +33,31 @@ async function main() {
   await mongoose.connect('mongodb://127.0.0.1:27017/test');
 }
 
-app.use("/listings",route);
-app.use("/listings/:id/review",review1)
-
-
-// const validShemaReview =(req,res,next)=>{
-//   let {error} = reviewShema.validate(req.body)
-//     if(error){
-//         const msg = error.details.map(el => el.message).join(",");
-//         throw new ExpressError(400, msg)
-//     }else{
-//         next()
-//     }
-// }
+const sessionOption = {
+    secret:"mysupersecretcode",
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+      expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly:true,
+    },
+}
+app.use(session(sessionOption));
+app.use(flash());
 
 app.get("/", (req,res)=>{
     res.send("Hello World");
 })
 
-//reviews route
-// app.post("/listings/:id/review", validShemaReview , AysncWrap( async(req,res)=>{
-//     let list1 = await Listing.findById(req.params.id);
-//     let newReview = new Reviewdata(req.body.review);
+app.use((req,res,next)=>{
+  res.locals.sucess = req.flash('sucess');
+  res.locals.error = req.flash('error');
+  next();
+})
 
-//     list1.reviews.push(newReview);
-
-//     await newReview.save();
-//     await list1.save();
-
-//     console.log("Review has send");
-//     res.redirect(`/listings/${list1._id}`)
-// }))
-
-// const finddata = async()=>{
-//     let data = await Reviewdata.find({});
-//     console.log(data);
-// }
-// finddata();
-
-// app.delete("/listings/:id/review/:reviewId", AysncWrap(async(req,res)=>{
-//     let {id,reviewId} = req.params;
-//     await Listing.findByIdAndUpdate(id, {$pull : {reviews: reviewId}})
-//     await Reviewdata.findByIdAndDelete(reviewId);
-//     res.redirect(`/listings/${id}`)
-// }))
+app.use("/listings",route);
+app.use("/listings/:id/review",review1)
 
 app.use((req,res,next)=>{
   next(new ExpressError(404,"page not found!"))
