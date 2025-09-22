@@ -8,6 +8,9 @@ const route = require("./Routes/listing.js");
 const review1 = require("./Routes/review.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const PassportLocal = require("passport-local");
+const User = require("./models/user.js");
 
 
 // const {listingSchema,reviewShema} = require("./schema.js")
@@ -45,7 +48,12 @@ const sessionOption = {
 }
 app.use(session(sessionOption));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new PassportLocal(User.authenticate()));
 
+passport.serializeUser(User.serializeUser());//user se related jo v information store krate h session me use serializeUser kahte h 
+passport.deserializeUser(User.deserializeUser());//user se related jo v information unstore krate h session se use deserializeUser kahte h
 app.get("/", (req,res)=>{
     res.send("Hello World");
 })
@@ -55,6 +63,36 @@ app.use((req,res,next)=>{
   res.locals.error = req.flash('error');
   next();
 })
+
+// app.get("/demo", async(req,res)=>{
+//   let fake = new User({
+//     email:"tahir0121@gamil.com",
+//     username:"Tahir",
+//   });
+
+//   let alldata = await User.register(fake, "tahir786");
+//   res.send(alldata)
+//   console.log(alldata);
+
+// })
+
+
+app.get("/demo", async(req,res)=>{
+  const existingUser = await User.findOne({ username: "Tahir" });
+  console.log(existingUser)
+  if(existingUser){
+    return res.send("User already exists!");
+  }
+
+  let fake = new User({
+    email:"tahir0121@gamil.com",
+    username:"Tahir",
+  });
+
+  let alldata = await User.register(fake, "tahir786");
+  res.send(alldata);
+});
+
 
 app.use("/listings",route);
 app.use("/listings/:id/review",review1)
