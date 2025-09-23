@@ -4,10 +4,15 @@ const mongoose = require('mongoose');
 // const Listing = require("./models/listing.js")
 // const Reviewdata = require("./models/review.js")
 const overRide = require("method-override")
-const route = require("./Routes/listing.js");
-const review1 = require("./Routes/review.js");
+
+const listingRoute = require("./Routes/listing.js");
+const reviewRoute = require("./Routes/review.js");
+const userRoute = require("./Routes/user.js");
+
+
 const session = require("express-session");
 const flash = require("connect-flash");
+
 const passport = require("passport");
 const PassportLocal = require("passport-local");
 const User = require("./models/user.js");
@@ -59,43 +64,33 @@ app.get("/", (req,res)=>{
 })
 
 app.use((req,res,next)=>{
-  res.locals.sucess = req.flash('sucess');
+  res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();
 })
 
+
 // app.get("/demo", async(req,res)=>{
+//   const existingUser = await User.findOne({ username: "Tahir" });
+//   console.log(existingUser)
+//   if(existingUser){
+//     return res.send("User already exists!");
+//   }
+
 //   let fake = new User({
 //     email:"tahir0121@gamil.com",
 //     username:"Tahir",
 //   });
 
 //   let alldata = await User.register(fake, "tahir786");
-//   res.send(alldata)
-//   console.log(alldata);
-
-// })
+//   res.send(alldata);
+// });
 
 
-app.get("/demo", async(req,res)=>{
-  const existingUser = await User.findOne({ username: "Tahir" });
-  console.log(existingUser)
-  if(existingUser){
-    return res.send("User already exists!");
-  }
+app.use("/listings",listingRoute);
+app.use("/listings/:id/review",reviewRoute)
+app.use("/",userRoute);
 
-  let fake = new User({
-    email:"tahir0121@gamil.com",
-    username:"Tahir",
-  });
-
-  let alldata = await User.register(fake, "tahir786");
-  res.send(alldata);
-});
-
-
-app.use("/listings",route);
-app.use("/listings/:id/review",review1)
 
 app.use((req,res,next)=>{
   next(new ExpressError(404,"page not found!"))

@@ -2,6 +2,7 @@ const express = require("express");
 const route = express.Router();
 const Listing = require("../models/listing.js")
 const {listingSchema} = require("../schema.js")
+const {isLoggedIn} = require("../middleware.js")
 
 const AysncWrap = require("../utils/asyncWrap.js");
 const ExpressError = require("../utils/ExpressError.js");
@@ -21,11 +22,11 @@ route.get("/",
     // validateListing,
     AysncWrap(async(req,res)=>{
     let allListing = await Listing.find({});
-    console.log(allListing)
+    // console.log(allListing)
     res.render("list/index.ejs", {allListing})
 }))
 //new Route
-route.get("/new", (req,res)=>{
+route.get("/new", isLoggedIn,(req,res)=>{
    res.render("list/new.ejs")
 })
 
@@ -47,13 +48,14 @@ route.post("/",
     AysncWrap(async(req,res,next)=>{
     let newListing = new Listing(req.body.listing);
     await newListing.save();
-    console.log(newListing)
-    req.flash('sucess', 'Login successfull!')
+    // console.log(newListing)
+    req.flash('success', 'Login successfull!')
     res.redirect("/listings")  
 }));
 
 route.get("/:id/edit", 
     // validateListing,
+    isLoggedIn,
     AysncWrap(async(req,res)=>{
     let {id} = req.params;
     // console.log("inside creation",{id});
@@ -61,11 +63,12 @@ route.get("/:id/edit",
     if(!listingEdit){
         throw new ExpressError(404, "Listing not found for edit!");
     }
-    console.log(listingEdit)
+    // console.log(listingEdit)
     res.render("list/edit.ejs", {listingEdit})
 }))
 route.put("/:id",
     validateListing,
+    isLoggedIn,
     AysncWrap(async (req, res) => {
     let { id } = req.params;
     let updated = await Listing.findByIdAndUpdate(id, req.body.listing, { runValidators: true, new: true });
@@ -77,15 +80,16 @@ route.put("/:id",
 
 route.delete("/:id",
     // validateListing,
+    isLoggedIn,
     AysncWrap(async(req,res)=>{
     let { id } = req.params;
-    console.log(id)
+    // console.log(id)
     let data = await Listing.findByIdAndDelete(id)
     if(!data){
        throw new ExpressError(404, "Cannot delete, listing not found!");
     }
     // console.log("deleted  data",data)
-    req.flash('sucess', 'Listing Deleted!')
+    req.flash('success', 'Listing Deleted!')
     res.redirect("/listings");  
     // res.send(id)
 }))
