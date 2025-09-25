@@ -3,37 +3,18 @@ const route = express.Router();
 const User = require("../models/user.js");
 const AysncWrap = require("../utils/asyncWrap.js");
 const passport = require("passport");
+const userController = require("../controllers/userController.js");
 
-route.get("/signup", (req,res)=>{
-    res.render("users/signup.ejs");
-});
+route.get("/signup", userController.createSignup);
 
-route.post("/signup", AysncWrap(async(req,res)=>{
-   let alldata = await User.find({});
-    console.log(alldata)
-   try{
-    let {username,email,password} = req.body;
-    let newUser = new User({username,email});
-    let alldata = await User.register(newUser,password);
-    console.log(alldata);
-    req.flash('sucess', 'login sucessfly');
-    res.redirect("/listings"); 
-   }catch(e){
-    req.flash('error', e.message);
-    res.redirect("/signup");
-   }
-}));
+route.post("/signup", AysncWrap(userController.postSignup));
 
-route.get("/login" ,(req,res)=>{
-  res.render("users/login.ejs");
-});
+route.get("/login" ,userController.createLogin);
 
-route.post("/login",
-  passport.authenticate("local",{
+route.post("/login",passport.authenticate("local",{
   failureRedirect:"/login", 
-  failureFlash:true}),async(req,res)=>{
-  req.flash('sucess', 'login sucessfly');
-  res.redirect("/listings")
-})
+  failureFlash:true}), userController.checkLogin);
+
+route.get("/logout", userController.userLogout)
 
 module.exports = route;

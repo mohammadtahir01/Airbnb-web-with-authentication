@@ -1,11 +1,13 @@
 const express = require("express");
-const route = express.Router();
-const Listing = require("../models/listing.js")
+const router = express.Router();
+// const Listing = require("../models/listing.js")
 const {listingSchema} = require("../schema.js")
 const {isLoggedIn} = require("../middleware.js")
 
 const AysncWrap = require("../utils/asyncWrap.js");
 const ExpressError = require("../utils/ExpressError.js");
+
+const listController = require("../controllers/listingController.js");
 
 
 const validateListing =(req,res,next)=>{
@@ -18,80 +20,38 @@ const validateListing =(req,res,next)=>{
     }
 }
 
-route.get("/", 
-    // validateListing,
-    AysncWrap(async(req,res)=>{
-    let allListing = await Listing.find({});
-    // console.log(allListing)
-    res.render("list/index.ejs", {allListing})
-}))
+router
+.route("/")
+.get(AysncWrap(listController.index))
+.post(
+    validateListing,
+    AysncWrap(listController.postForm)
+);
+
+// route.get("/",AysncWrap(listController.index))
 //new Route
-route.get("/new", isLoggedIn,(req,res)=>{
-   res.render("list/new.ejs")
-})
+
+router.get("/new", isLoggedIn, listController.newForm)
+
+router.route("/:id")
+.get(AysncWrap(listController.show))
+.put(validateListing, isLoggedIn, AysncWrap(listController.updatePost))
+.delete(isLoggedIn, AysncWrap(listController.deletePost)
+);
 
 //show Route
-route.get("/:id", 
-    // validateListing,
-     AysncWrap(async(req,res)=>{
-    let {id} = req.params;
-    let listingId = await Listing.findById(id).populate("reviews");
-    if(!listingId){
-        throw new ExpressError(404, "Listing not found!");
-    }
-    res.render("list/show.ejs", {listingId})
-}))
+// router.get("/:id",AysncWrap(listController.show))
 
 //Create Route
-route.post("/", 
-    validateListing,
-    AysncWrap(async(req,res,next)=>{
-    let newListing = new Listing(req.body.listing);
-    await newListing.save();
-    // console.log(newListing)
-    req.flash('success', 'Login successfull!')
-    res.redirect("/listings")  
-}));
+// route.post("/", validateListing,AysncWrap(listController.postForm));
 
-route.get("/:id/edit", 
-    // validateListing,
-    isLoggedIn,
-    AysncWrap(async(req,res)=>{
-    let {id} = req.params;
-    // console.log("inside creation",{id});
-    let listingEdit = await Listing.findById(id);
-    if(!listingEdit){
-        throw new ExpressError(404, "Listing not found for edit!");
-    }
-    // console.log(listingEdit)
-    res.render("list/edit.ejs", {listingEdit})
-}))
-route.put("/:id",
-    validateListing,
-    isLoggedIn,
-    AysncWrap(async (req, res) => {
-    let { id } = req.params;
-    let updated = await Listing.findByIdAndUpdate(id, req.body.listing, { runValidators: true, new: true });
-     if(!updated){
-        throw new ExpressError(404, "Cannot update, listing not found!");
-    }
-    res.redirect("/listings");
-})); 
+//edit post
+router.get("/:id/edit", isLoggedIn, AysncWrap(listController.postEdit))
 
-route.delete("/:id",
-    // validateListing,
-    isLoggedIn,
-    AysncWrap(async(req,res)=>{
-    let { id } = req.params;
-    // console.log(id)
-    let data = await Listing.findByIdAndDelete(id)
-    if(!data){
-       throw new ExpressError(404, "Cannot delete, listing not found!");
-    }
-    // console.log("deleted  data",data)
-    req.flash('success', 'Listing Deleted!')
-    res.redirect("/listings");  
-    // res.send(id)
-}))
+//update Post
+// router.put("/:id", validateListing, isLoggedIn, AysncWrap(listController.updatePost)); 
 
-module.exports = route;
+//delete psot
+// router.delete("/:id", isLoggedIn, AysncWrap(listController.deletePost));
+
+module.exports = router;
