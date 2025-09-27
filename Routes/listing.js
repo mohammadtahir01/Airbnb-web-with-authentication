@@ -8,6 +8,10 @@ const AysncWrap = require("../utils/asyncWrap.js");
 const ExpressError = require("../utils/ExpressError.js");
 
 const listController = require("../controllers/listingController.js");
+//this package for file uploading
+const multer  = require('multer')
+const {storage} = require("../cloudConfig.js");
+const upload = multer({storage});
 
 
 const validateListing =(req,res,next)=>{
@@ -25,8 +29,10 @@ router
 .get(AysncWrap(listController.index))
 .post(
     validateListing,
+    upload.single('listing[image]'),
     AysncWrap(listController.postForm)
 );
+
 
 // route.get("/",AysncWrap(listController.index))
 //new Route

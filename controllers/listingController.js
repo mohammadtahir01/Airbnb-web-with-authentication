@@ -20,7 +20,12 @@ const show = async(req,res)=>{
 };
 
 const postForm=async(req,res,next)=>{
+    let url = req.file.path;
+    let filename = req.file.filename;
+    console.log(url, "....", filename);
+
     let newListing = new Listing(req.body.listing);
+    newListing.image = {url,filename};
     await newListing.save();
     // console.log(newListing)
     req.flash('success', 'Login successfull!')
