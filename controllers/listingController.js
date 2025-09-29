@@ -2,7 +2,7 @@ const Listing = require("../models/listing.js")
 
 const index = async(req,res)=>{
     let allListing = await Listing.find({});
-    // console.log(allListing)
+    console.log(allListing)
     res.render("list/index.ejs", {allListing})
 };
 
@@ -19,18 +19,37 @@ const show = async(req,res)=>{
     res.render("list/show.ejs", {listingId})
 };
 
-const postForm=async(req,res,next)=>{
-    let url = req.file.path;
+// const postForm=async(req,res,next)=>{
+//     let url = req.file.path;
+//     let filename = req.file.filename;
+//     console.log(url, "....", filename);
+//     let newListing = new Listing(req.body.listing);
+//     newListing.image = {url,filename};
+//     await newListing.save();
+//     // console.log(newListing)
+//     req.flash('success', 'Login successfull!')
+//     res.redirect("/listings")  
+// }
+
+
+const postForm = async (req, res, next) => {
+    if (!req.file) {
+        throw new ExpressError(400, "Image upload failed!");
+    }
+    // Cloudinary se aata hai
+    let url = req.file.path || req.file.secure_url;  
     let filename = req.file.filename;
-    console.log(url, "....", filename);
+
+    console.log("Uploaded file:", req.file);
 
     let newListing = new Listing(req.body.listing);
-    newListing.image = {url,filename};
+    newListing.image = { url, filename };
     await newListing.save();
-    // console.log(newListing)
-    req.flash('success', 'Login successfull!')
-    res.redirect("/listings")  
-}
+
+    req.flash('success', 'Listing created successfully!');
+    res.redirect("/listings");
+};
+
 
 const postEdit = async(req,res)=>{
     let {id} = req.params;
