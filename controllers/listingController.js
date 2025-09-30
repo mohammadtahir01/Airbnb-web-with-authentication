@@ -68,7 +68,15 @@ const updatePost = async (req, res) => {
      if(!updated){
         throw new ExpressError(404, "Cannot update, listing not found!");
     }
-    res.redirect("/listings");
+     if (req.file) {
+        updated.image = {
+            url: req.file.path || req.file.secure_url,
+            filename: req.file.filename
+        };
+        await updated.save();
+    }
+    req.flash("success", "Listing updated successfully!");
+     res.redirect(`/listings/${updated._id}`);
 };
 
 const deletePost = async(req,res)=>{

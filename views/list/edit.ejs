@@ -2,7 +2,7 @@
  <div class="row pt-3 pb-3" >
     <div class="col-8 offset-2">
     <h3>Edit data</h3>
-    <form method="post" action="/listings/<%= listingEdit._id %>?_method=PUT">
+    <form method="post" action="/listings/<%= listingEdit._id %>?_method=PUT" enctype="multipart/form-data">
         <!-- <p><%=listingEdit._id %></p> -->
         <div class="mb-1">
         <label for="title" class="form-label"><Title></Title></label>
@@ -14,9 +14,14 @@
         <textarea name="listing[description]" required class="form-control"><%=listingEdit.description %></textarea>
        </div>
         
-      <div class="mb-1">
+      <!-- <div class="mb-1">
         <label for="image" class="form-label">Image Link</label>
         <input type="text" name="listing[image]" value="<%=listingEdit.image %>" class="form-control">
+      </div> -->
+
+      <div class="mb-1">
+        <label for="image" class="form-label">Image Link</label>
+        <input type="file" name="listing[image]" class="form-control">
       </div>
       
   <div class="row">

@@ -41,7 +41,9 @@ router.get("/new", isLoggedIn, listController.newForm)
 
 router.route("/:id")
 .get(AysncWrap(listController.show))
-.put(validateListing, isLoggedIn, AysncWrap(listController.updatePost))
+.put(validateListing, isLoggedIn, 
+    upload.single('listing[image]'),
+    AysncWrap(listController.updatePost))
 .delete(isLoggedIn, AysncWrap(listController.deletePost)
 );
 
@@ -52,7 +54,8 @@ router.route("/:id")
 // route.post("/", validateListing,AysncWrap(listController.postForm));
 
 //edit post
-router.get("/:id/edit", isLoggedIn, AysncWrap(listController.postEdit))
+router.get("/:id/edit", isLoggedIn,
+    AysncWrap(listController.postEdit))
 
 //update Post
 // router.put("/:id", validateListing, isLoggedIn, AysncWrap(listController.updatePost)); 
