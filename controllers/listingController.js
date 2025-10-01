@@ -2,7 +2,6 @@ const Listing = require("../models/listing.js")
 
 const index = async(req,res)=>{
     let allListing = await Listing.find({});
-    console.log(allListing)
     res.render("list/index.ejs", {allListing})
 };
 
@@ -92,6 +91,15 @@ const deletePost = async(req,res)=>{
     // res.send(id)
 };
 
+const SearchPage1 = async(req,res)=>{
+//   console.log(req.body);
+//   res.send("ok");
+  let {country} = req.body;
+  let countryData = await Listing.find({country});
+//   console.log(countryData);
+  res.render("list/index.ejs", { allListing: countryData });
+}
+
 module.exports ={
     index,
     newForm,
@@ -100,4 +108,5 @@ module.exports ={
     postEdit,
     updatePost,
     deletePost,
+    SearchPage1,
 };

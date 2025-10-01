@@ -37,6 +37,9 @@ router
 // route.get("/",AysncWrap(listController.index))
 //new Route
 
+//search bar 
+router.post("/searchPage", listController.SearchPage1)
+
 router.get("/new", isLoggedIn, listController.newForm)
 
 router.route("/:id")
